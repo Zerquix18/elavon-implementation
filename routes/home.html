@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Evalon Lightbox</title>
+  <meta charset="utf-8">
+</head>
+<body>
+
+<button onClick="javascript:openLightbox()">Click me to open the Lightbox!</button>
+
+<script>
+async function getToken(amount) {
+  console.log(`Getting token to charge ${amount}...`)
+  const response = await fetch(`/token?amount=${amount}`)
+  const result   = await response.json()
+  const { token } = result
+  console.log(`Token received: ${token}...`)
+  return token
+}
+
+async function openLightbox() {
+  const token = await getToken(20)
+  const fields = { ssl_txn_auth_token: token }
+  const callbacks = {
+    onError: (error) => {
+      alert('Something went wrong')
+      console.log(error)
+    },
+    onCancelled: () => {
+      alert('It was cancelled')
+      console.log()
+    },
+    onDeclined: (error) => {
+      alert('Declined.')
+      console.log(error)
+    },
+    onApproval: (success) => {
+      alert('Success!!!!!')
+      console.log(success)
+    },
+  };
+  console.log('Attempting to open Lightbox...')
+  window.PayWithConverge.open(fields, callbacks)
+}
+</script>
+<script async src="https://demo.convergepay.com/hosted-payments/PayWithConverge.js"></script>
+</body>
+</html>
